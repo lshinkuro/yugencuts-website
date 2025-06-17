@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Calendar, User } from 'lucide-react';
+import logo from '../assets/logo.jpeg';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,14 +21,16 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16 lg:h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-black rounded-sm flex items-center justify-center">
-                <span className="text-white font-bold text-sm">Y</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900 tracking-tight">
-                YugenCuts
-              </span>
-            </Link>
+          <Link to="/" className="flex items-center space-x-2">
+            <img
+              src={logo}
+              alt="YugenCuts Logo"
+              className="h-10 w-auto object-contain"
+            />
+             <span className="text-xl font-bold text-gray-900 tracking-tight">
+              YugenCuts
+            </span>
+          </Link>
           </div>
 
           {/* Desktop Navigation */}

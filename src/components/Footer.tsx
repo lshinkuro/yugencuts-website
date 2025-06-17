@@ -1,14 +1,14 @@
-import React from 'react';
 import {
   Instagram,
-  Twitter,
-  Facebook,
+
   MapPin,
   Phone,
   Mail,
   Clock,
   Ticket,
 } from 'lucide-react';
+import logo from '../assets/logo.jpeg';
+
 
 const Footer = () => {
   const contactInfo = [
@@ -46,9 +46,11 @@ const Footer = () => {
           {/* Brand & Description */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-white text-black font-bold text-sm flex items-center justify-center rounded-sm">
-                Y
-              </div>
+              <img
+                src={logo}
+                alt="YugenCuts Logo"
+                className="h-10 w-auto object-contain"
+              />
               <span className="text-xl font-bold">YugenCuts</span>
             </div>
             <p className="text-gray-300 max-w-sm leading-relaxed mb-6">

@@ -92,57 +92,55 @@ const Services: React.FC<ServicesProps> = ({ services = [] }) => {
             })}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredServices.map((service) => {
-              const Icon = service.icon;
-              return (
-                <div
-                  key={service.id}
-                  className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group relative"
-                >
-                  {service.popular && (
-                    <div className="absolute top-4 right-4 z-10">
-                      <span className="bg-black text-white text-xs font-medium px-2 py-1 rounded-full">
-                        Popular
-                      </span>
-                    </div>
-                  )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredServices.map((service) => {
+                const Icon = service.icon;
+                return (
+                  <div
+                    key={service.id}
+                    className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition duration-200"
+                  >
+                    {service.popular && (
+                      <div className="absolute top-3 right-3 z-10">
+                        <span className="bg-black text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
+                          Popular
+                        </span>
+                      </div>
+                    )}
 
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all duration-300">
-                        <Icon className="w-6 h-6" />
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center text-gray-700">
+                        <Icon className="w-5 h-5" />
                       </div>
                       <div className="text-right">
-                        <div className="text-xl font-bold text-gray-900 mb-1">
+                        <div className="text-base font-semibold text-gray-800">
                           {service.price}
                         </div>
-                        <div className="flex items-center space-x-1 text-sm text-gray-500">
-                          <Clock className="w-4 h-4" />
+                        <div className="flex items-center justify-end text-xs text-gray-500 mt-1">
+                          <Clock className="w-3 h-3 mr-1" />
                           <span>{service.duration}</span>
                         </div>
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                    <h3 className="text-base font-semibold text-gray-900 mb-2">
                       {service.name}
                     </h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-sm text-gray-500 mb-4 leading-snug">
                       {service.description}
                     </p>
 
                     <button
                       onClick={() => handleBookService(service)}
-                      style={{ backgroundColor: '#1F2A44' }}
-                      className="w-full  text-white py-3 px-4 rounded-lg hover:bg-gray-900 transition-all duration-300 font-medium group-hover:shadow-lg transform group-hover:-translate-y-0.5"
+                      className="w-full text-sm py-2 rounded-md text-white transition bg-gray-800 hover:bg-gray-900"
                     >
                       Book This Service
                     </button>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+
 
           {filteredServices.length === 0 && (
             <div className="text-center py-12">

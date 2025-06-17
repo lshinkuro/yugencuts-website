@@ -45,7 +45,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
   useEffect(() => {
     const fetchBarbers = async () => {
       const { data, error } = await supabase
-        .from('barberlist-table')
+        .from('barberlist_table')
         .select('*')
         .eq('status', true); // hanya ambil barber dengan status true;
 

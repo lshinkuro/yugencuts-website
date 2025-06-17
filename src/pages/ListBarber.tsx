@@ -16,7 +16,7 @@ const ListBarbers: React.FC = () => {
   useEffect(() => {
     const fetchBarbers = async () => {
       const { data, error } = await supabase
-        .from('barberlist-table')
+        .from('barberlist_table')
         .select('*');
 
       if (error) {

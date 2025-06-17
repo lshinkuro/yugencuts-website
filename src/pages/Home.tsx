@@ -30,7 +30,7 @@ const Home = () => {
   useEffect(() => {
     const getData = async () => {
       const { data, error } = await supabase
-        .from('pricelist-table')
+        .from('pricelist_table')
         .select('*');
   
       if (error) {

@@ -27,7 +27,7 @@ const Footer = () => {
     },
     { icon: Phone, label: '+62 811-9462-018' },
     { icon: Mail, label: 'yugencuts.info@gmail.com' },
-    { icon: Clock, label: 'Mon-Sun: 9:00 AM - 10:00 PM' },
+    { icon: Clock, label: 'Mon-Sun: 11:00 AM - 11:00 PM' },
   ];
 
   const socialLinks = [

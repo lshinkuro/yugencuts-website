@@ -38,7 +38,7 @@ const Contact = () => {
               <MapPin className="text-[#1F2A44] w-6 h-6 mt-1" />
               <div>
                 <h4 className="font-semibold text-[#1F2A44]">Address</h4>
-                <p className="text-gray-600">Jl. Mawar No. 7, South Jakarta</p>
+                <p className="text-gray-600">📍Jl. Margonda No.518a, Pondok Cina, Kecamatan Beji, Kota Depok, Jawa Barat 16424</p>
               </div>
             </div>
 
@@ -46,7 +46,7 @@ const Contact = () => {
               <Phone className="text-[#1F2A44] w-6 h-6 mt-1" />
               <div>
                 <h4 className="font-semibold text-[#1F2A44]">Phone / WhatsApp</h4>
-                <p className="text-gray-600">+62 812-3456-7890</p>
+                <p className="text-gray-600">+62 811-9462-018</p>
               </div>
             </div>
 
@@ -54,7 +54,7 @@ const Contact = () => {
               <Mail className="text-[#1F2A44] w-6 h-6 mt-1" />
               <div>
                 <h4 className="font-semibold text-[#1F2A44]">Email</h4>
-                <p className="text-gray-600">hello@yugencuts.com</p>
+                <p className="text-gray-600">yugencuts.info@gmail.com</p>
               </div>
             </div>
           </div>

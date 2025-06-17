@@ -5,12 +5,11 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { name: 'Home', href: '#' },
-    { name: 'Services', href: '#services' },
-    { name: 'Barbers', href: '#barbers' },
-    { name: 'Gallery', href: '#gallery' },
-    { name: 'About', href: '#about' },
-    { name: 'Contact', href: '#contact' }
+    { name: 'Home', href: 'home' },
+    { name: 'Barbers', href: 'barbers' },
+    { name: 'Gallery', href: 'gallery' },
+    { name: 'About', href: 'about' },
+    { name: 'Contact', href: 'contact' }
   ];
 
   return (
@@ -45,14 +44,32 @@ const Navbar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center space-x-4">
-            <button className="inline-flex items-center px-4 py-2 border border-black text-sm font-medium text-black bg-white hover:bg-black hover:text-white transition-all duration-300">
-              <Calendar className="w-4 h-4 mr-2" />
-              Book Now
-            </button>
-            <button className="p-2 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all duration-200">
-              <User className="w-5 h-5" />
-            </button>
-          </div>
+                <a
+                  href={`https://wa.me/628119462018?text=${encodeURIComponent(
+                    `Terima kasih telah menghubungi Yugen info.
+
+                    Untuk booking, Silahkan isi format:
+                    Nama : 
+                    Tgl : 
+                    Jam : 
+                    Barberman :
+
+                    Buka setiap hari : 11.00-23.00
+                    Jum'at : 14.00-23.00
+                    🙏🙏`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 border border-black text-sm font-medium text-black bg-white hover:bg-black hover:text-white transition-all duration-300"
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Book Now
+                </a>
+
+                <button className="p-2 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all duration-200">
+                  <User className="w-5 h-5" />
+                </button>
+              </div>
 
           {/* Mobile menu button */}
           <div className="lg:hidden flex items-center space-x-2">

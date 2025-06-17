@@ -7,6 +7,7 @@ import {
   Phone,
   Mail,
   Clock,
+  Ticket,
 } from 'lucide-react';
 
 const Footer = () => {
@@ -20,13 +21,13 @@ const Footer = () => {
           rel="noopener noreferrer"
           className="hover:underline"
         >
-          Jl. Panglima Polim No.3, Jakarta Selatan
+          📍Jl. Margonda No.518a, Pondok Cina, Kecamatan Beji, Kota Depok, Jawa Barat 16424
         </a>
       ),
     },
-    { icon: Phone, label: '+62 812 3456 7890' },
-    { icon: Mail, label: 'hello@yugencuts.com' },
-    { icon: Clock, label: 'Mon-Sun: 9:00 AM - 9:00 PM' },
+    { icon: Phone, label: '+62 811-9462-018' },
+    { icon: Mail, label: 'yugencuts.info@gmail.com' },
+    { icon: Clock, label: 'Mon-Sun: 9:00 AM - 10:00 PM' },
   ];
 
   const socialLinks = [
@@ -35,8 +36,7 @@ const Footer = () => {
       href: 'https://www.instagram.com/yugencuts/?hl=en',
       name: 'Instagram',
     },
-    { icon: Twitter, href: '#', name: 'Twitter' },
-    { icon: Facebook, href: '#', name: 'Facebook' },
+    { icon: Ticket , href: 'https://www.tiktok.com/@yugencutsbarbershop', name: 'Tiktok' },
   ];
 
   return (

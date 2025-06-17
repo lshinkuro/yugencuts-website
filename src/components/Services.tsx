@@ -46,7 +46,7 @@ const Services: React.FC<ServicesProps> = ({ services = [] }) => {
 
   const filteredServices =
     activeCategory === 'all'
-      ? services
+      ? services.sort((a, b) => a.category.localeCompare(b.category))
       : services.filter((s) => s.category === activeCategory);
 
   const handleBookService = (service: ServiceItem) => {

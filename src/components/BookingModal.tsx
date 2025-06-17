@@ -11,6 +11,7 @@ type Barber = {
   image: string;
   specialty?: string;
   rating?: number;
+  status?: boolean;
 };
 
 type Service = {
@@ -45,7 +46,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
     const fetchBarbers = async () => {
       const { data, error } = await supabase
         .from('barberlist-table')
-        .select('*');
+        .select('*')
+        .eq('status', true); // hanya ambil barber dengan status true;
 
       if (error) {
         console.error('Error fetching barbers:', error);

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Hero from '../components/Hero';
 import Services from '../components/Services';
 import { Scissors, Sparkles, Crown, LucideIcon } from 'lucide-react';
+import { supabase } from '../lib/supabaseClient';
+
 
 // Tipe data untuk 1 service item
 interface ServiceItem {
@@ -27,10 +28,15 @@ const Home = () => {
   const [servicesData, setServicesData] = useState<ServiceItem[]>([]);
 
   useEffect(() => {
-    axios
-      .get('https://sheetdb.io/api/v1/cz58xc39pr52o') // Ganti dengan SheetDB ID kamu
-      .then((res) => {
-        const formatted: ServiceItem[] = res.data.map((item: any, index: number) => {
+    const getData = async () => {
+      const { data, error } = await supabase
+        .from('pricelist-table')
+        .select('*');
+  
+      if (error) {
+        console.error('Error fetching:', error);
+      } else {
+        const formatted: ServiceItem[] = data.map((item: any, index: number) => {
           const category = item.Kategori?.toLowerCase() || 'uncategorized';
           return {
             id: index + 1,
@@ -43,8 +49,12 @@ const Home = () => {
             popular: false,
           };
         });
+  
         setServicesData(formatted);
-      });
+      }
+    };
+  
+    getData();
   }, []);
 
   return (

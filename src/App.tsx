@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-      <main className="pt-16">
+      <main className="pt-1">
         <Routes>
           <Route path="/" element={<Home />} />  
           <Route path="/barbers" element={<ListBarbers />} /> 

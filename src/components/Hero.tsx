@@ -1,4 +1,5 @@
 import { Calendar } from 'lucide-react';
+import heroBg from '../assets/yugent.png';
 
 const Hero = () => {
   const scrollToServices = () => {
@@ -6,9 +7,16 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative bg-white overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col lg:flex-row items-start justify-between">
+    <section
+      className="relative bg-cover bg-center bg-no-repeat overflow-hidden min-h-screen"
+      style={{ backgroundImage: `url(${heroBg})` }}
+    >
+      {/* Overlay */}
+      <div className="absolute inset-0 "></div>
+
+      {/* Content */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center min-h-screen">
+        <div className="flex flex-col lg:flex-row items-start justify-between w-full">
           {/* Left Content */}
           <div className="w-full lg:w-1/2 pr-8">
             <span className="inline-block mb-4 px-3 py-1 text-xs font-semibold tracking-wide uppercase bg-[#F0F4FA] text-[#1F2A44] rounded-full">
@@ -19,7 +27,7 @@ const Hero = () => {
               Craft Your <span className="text-black">Perfect Look</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed max-w-md">
+            <p className="text-base sm:text-lg text-white mb-6 leading-relaxed max-w-md">
               Modern grooming rooted in tradition. Our master barbers bring out your best look with precision and care.
             </p>
 

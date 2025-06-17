@@ -13,7 +13,7 @@ function App() {
       <Navbar />
       <main className="pt-16">
         <Routes>
-          <Route path="/home" element={<Home />} />  
+          <Route path="/" element={<Home />} />  
           <Route path="/barbers" element={<ListBarbers />} /> 
           <Route path="/about" element={<About />} />          {/* Tambahkan route lain di sini */}
           <Route path="/gallery" element={<Gallery />} />          {/* Tambahkan route lain di sini */}

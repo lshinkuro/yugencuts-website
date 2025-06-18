@@ -6,6 +6,7 @@ import ListBarbers from './pages/ListBarber';
 import About from './pages/About';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
+import BookingsPage from './pages/BookingsPage';
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
           <Route path="/about" element={<About />} />          {/* Tambahkan route lain di sini */}
           <Route path="/gallery" element={<Gallery />} />          {/* Tambahkan route lain di sini */}
           <Route path="/contact" element={<Contact />} />     
+          <Route path="/bookinglist" element={<BookingsPage />} />     
+
         </Routes>
       </main>
       <Footer />

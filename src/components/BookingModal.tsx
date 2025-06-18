@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 
 type Barber = {
+  barber_id: string;
   id: number;
   name: string;
   role: string;
@@ -73,23 +74,82 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
     onClose();
   };
 
-  const handleBookingComplete = () => {
-    const message = `
-    Halo, saya ingin booking layanan:
-    • Layanan: ${selectedService?.name}
-    • Barber: ${selectedBarber?.name}
-    • Tanggal: ${selectedDate}
-    • Jam: ${selectedTime}
-    • Nama: ${customerName}
-    • No HP: ${customerPhone} Note: Terima kasih atas booking-nya di Yugen Cuts. Untuk kenyamanan bersama, mohon datang tepat waktu ya. Keterlambatan lebih dari 10 menit, booking akan dijadwalkan ulang. See you! 🙏🏻😊
-        `.trim();
-
-    const phone = '628119462018'; // Ganti dengan nomor WA admin
-    const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-
-    window.open(whatsappLink, '_blank');
-    onClose();
+  const isTimeSlotTaken = async () => {
+    const { data, error } = await supabase
+      .from('order_list')
+      .select('*')
+      .eq('barber_id', selectedBarber?.barber_id)
+      .eq('date', selectedDate)
+      .eq('time', selectedTime);
+  
+    if (error) {
+      console.error('Error checking time slot:', error);
+      return false;
+    }
+  
+    return data.length > 0;
   };
+
+  
+
+  const handleSubmitToSupabase = async () => {
+    if (await isTimeSlotTaken()) {
+      alert('Waktu ini sudah dibooking untuk barber tersebut.');
+      return false;
+    }
+
+    if (!selectedBarber || !selectedService || !selectedDate || !selectedTime || !customerName) {
+      alert('Please fill all booking fields.');
+      return false;
+    }
+  
+    const { error } = await supabase
+      .from('order_list')
+      .insert([
+        {
+          customer_name: customerName,
+          customer_phonenumber: customerPhone,
+          barber_id: selectedBarber.barber_id || selectedBarber.id, // pastikan UUID
+          service: selectedService.name,
+          date: selectedDate,
+          time: selectedTime,
+          notes: customerPhone,
+          status: 'Booked',
+        }
+      ]);
+  
+    if (error) {
+      console.error('Insert booking error:', error);
+      alert('Failed to book appointment.');
+      return false;
+    }
+  
+    return true;
+  };
+  
+  const handleBookingComplete = async () => {
+    const success = await handleSubmitToSupabase();
+    if (!success) return;
+  
+    const message = `
+      Halo, saya ingin booking layanan:
+      • Layanan: ${selectedService?.name}
+      • Barber: ${selectedBarber?.name}
+      • Tanggal: ${selectedDate}
+      • Jam: ${selectedTime}
+      • Nama: ${customerName}
+      • No HP: ${customerPhone}
+      
+      Note: Terima kasih atas booking-nya di Yugen Cuts. Untuk kenyamanan bersama, mohon datang tepat waktu ya. Keterlambatan lebih dari 10 menit, booking akan dijadwalkan ulang. See you! 🙏🏻😊
+        `.trim();
+      
+        const phone = '628119462018';
+        const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      
+        window.open(whatsappLink, '_blank');
+        onClose();
+    };
+  
 
   const getNextAvailableDate = () => {
     const today = new Date();
@@ -161,10 +221,10 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
               <div className="space-y-4">
                 {barbers.map((barber) => (
                   <div
-                    key={barber.id}
+                    key={barber.barber_id}
                     onClick={() => setSelectedBarber(barber)}
                     className={`p-4 border rounded-lg cursor-pointer ${
-                      selectedBarber?.id === barber.id ? 'border-black bg-gray-50' : 'border-gray-200'
+                      selectedBarber?.barber_id === barber.barber_id ? 'border-black bg-gray-50' : 'border-gray-200'
                     }`}
                   >
                     <div className="flex items-center space-x-4">

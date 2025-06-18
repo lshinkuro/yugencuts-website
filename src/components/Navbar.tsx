@@ -12,7 +12,8 @@ const Navbar = () => {
     { name: 'Barbers', path: '/barbers' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Contact', path: '/contact' },
+    { name: 'List Bookings', path: '/bookinglist' } // ✅ Tambahan
   ];
 
   return (
@@ -21,16 +22,16 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16 lg:h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-          <Link to="/" className="flex items-center space-x-2">
-            <img
-              src={logo}
-              alt="YugenCuts Logo"
-              className="h-10 w-auto object-contain"
-            />
-             <span className="text-xl font-bold text-gray-900 tracking-tight">
-              YugenCuts
-            </span>
-          </Link>
+            <Link to="/" className="flex items-center space-x-2">
+              <img
+                src={logo}
+                alt="YugenCuts Logo"
+                className="h-10 w-auto object-contain"
+              />
+              <span className="text-xl font-bold text-gray-900 tracking-tight">
+                YugenCuts
+              </span>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}

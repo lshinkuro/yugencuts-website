@@ -1,23 +1,48 @@
-// src/components/ProtectedRoute.tsx
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 
 const ProtectedRoute = () => {
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // null = loading
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      setAuthenticated(!!data.session);
-      setLoading(false);
-    };
-    checkUser();
-  }, []);
+  const checkSession = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-  if (loading) return <p className="p-6">Checking auth...</p>;
-  return authenticated ? <Outlet /> : <Navigate to="/admin/login" />;
+    const localToken = localStorage.getItem(
+      Object.keys(localStorage).find((key) => key.includes('auth-token')) || ''
+    );
+
+    console.log('Session:', session);
+    console.log('Local Token:', localToken);
+
+    // Hanya autentikasi jika ada session DAN token tersimpan di localStorage
+    if (session && localToken) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+  };
+
+  checkSession();
+
+  const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    setIsAuthenticated(!!session);
+  });
+
+  return () => {
+    listener?.subscription.unsubscribe();
+  };
+}, []);
+
+
+  if (isAuthenticated === null) {
+    return <div className="p-6">Checking auth...</div>; // show loading state
+  }
+
+  return isAuthenticated ? <Outlet /> : <Navigate to="/admin/login" replace />;
 };
 
 export default ProtectedRoute;

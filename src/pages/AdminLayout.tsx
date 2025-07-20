@@ -31,10 +31,21 @@ const AdminLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/admin/login');
-  };
+const handleLogout = async () => {
+  const { error } = await supabase.auth.signOut();
+
+  // Hapus sisa-sisa session
+  localStorage.removeItem('supabase.auth.token'); // optional if you're storing it yourself
+  localStorage.removeItem('supabase.auth.token.ttl'); // sometimes used
+  sessionStorage.clear();
+
+  if (error) {
+    console.error('Logout failed:', error.message);
+  } else {
+    console.log('Logout successful');
+    window.location.href = '/admin/login'; // pakai hard redirect agar refresh auth state
+  }
+};
 
   return (
     <div className="flex min-h-screen bg-gray-50">

@@ -8,60 +8,59 @@ const Hero = () => {
 
   return (
     <section
-      className="relative bg-cover bg-center bg-no-repeat overflow-hidden min-h-screen"
+      className="relative bg-cover bg-center bg-no-repeat min-h-screen flex items-center"
       style={{ backgroundImage: `url(${heroBg})` }}
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 "></div>
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-transparent z-0" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center min-h-screen">
-        <div className="flex flex-col lg:flex-row items-start justify-between w-full">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-10 py-24">
+          
           {/* Left Content */}
-          <div className="w-full lg:w-1/2 pr-8">
-            <span className="inline-block mb-4 px-3 py-1 text-xs font-semibold tracking-wide uppercase bg-[#F0F4FA] text-[#1F2A44] rounded-full">
+          <div className="lg:w-1/2 text-white">
+            <span className="inline-block mb-5 px-4 py-1 text-xs font-medium tracking-wider uppercase bg-white/10 text-white rounded-full backdrop-blur-sm">
               Premium Barbershop Experience
             </span>
 
-            <h1 className="text-3xl sm:text-4xl font-bold text-[#1F2A44] mb-4 leading-tight">
-              Craft Your <span className="text-black">Perfect Look</span>
+            <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight text-white mb-5">
+              Craft Your <span className="text-yellow-400">Perfect Look</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-white mb-6 leading-relaxed max-w-md">
+            <p className="text-base sm:text-lg text-white/90 leading-relaxed mb-8 max-w-md">
               Modern grooming rooted in tradition. Our master barbers bring out your best look with precision and care.
             </p>
 
             <button
               onClick={scrollToServices}
-              className="inline-flex items-center px-6 py-3 text-sm font-medium bg-[#1F2A44] text-white rounded-full hover:bg-[#162036] transition-all duration-300"
+              className="inline-flex items-center px-6 py-3 text-sm font-medium bg-yellow-400 text-black rounded-full hover:bg-yellow-300 transition-all duration-300 shadow-md"
             >
               Book Appointment
               <Calendar className="ml-2 w-4 h-4" />
             </button>
 
             {/* Stats */}
-            <div className="mt-10 grid grid-cols-3 gap-6 text-left">
-              <div>
-                <p className="text-xl font-semibold text-black">1000+</p>
-                <p className="text-xs text-gray-500 uppercase">Clients</p>
-              </div>
-              <div>
-                <p className="text-xl font-semibold text-black">8+</p>
-                <p className="text-xs text-gray-500 uppercase">Years</p>
-              </div>
-              <div>
-                <p className="text-xl font-semibold text-black">99%</p>
-                <p className="text-xs text-gray-500 uppercase">Satisfaction</p>
-              </div>
+            <div className="mt-12 grid grid-cols-3 gap-6 max-w-xs text-left">
+              {[
+                { label: 'Clients', value: '1000+' },
+                { label: 'Years', value: '8+' },
+                { label: 'Satisfaction', value: '99%' },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-xs text-white/70 uppercase tracking-wide">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Optional Right Image */}
+          {/* Right image (optional, for future use) */}
           {/* <div className="hidden lg:block w-1/2">
             <img
-              src="/your-barbershop-image.jpg"
+              src="/your-barber-image.jpg"
               alt="Barber"
-              className="w-full h-auto rounded-xl shadow-lg"
+              className="rounded-2xl shadow-xl object-cover w-full h-auto"
             />
           </div> */}
         </div>

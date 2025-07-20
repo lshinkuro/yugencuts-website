@@ -37,6 +37,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
   const [customerName, setCustomerName] = useState<string>('');
   const [customerPhone, setCustomerPhone] = useState<string>('');
 
+  const today = new Date().toISOString().split('T')[0];
+  const isToday = selectedDate === today;
+
   const timeSlots = [
     '11:00', '12:00', '13:00', '14:00', '15:00',
     '16:00', '17:00', '18:00', '19:00', '20:00',
@@ -88,6 +91,16 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
     }
   
     return data.length > 0;
+  };
+
+  const isTimeInPast = (time: string) => {
+    const [hour, minute] = time.split(':').map(Number);
+    const now = new Date();
+
+    const slotTime = new Date();
+    slotTime.setHours(hour, minute, 0, 0);
+
+    return slotTime < now;
   };
 
   
@@ -150,12 +163,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
         onClose();
     };
   
-
   const getNextAvailableDate = () => {
     const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
+    return today.toISOString().split('T')[0];
   };
 
   if (!isOpen) return null;
@@ -276,20 +286,27 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2">Available Times</label>
                 <div className="grid grid-cols-3 gap-3">
-                  {timeSlots.map((time) => (
-                    <button
-                      key={time}
-                      onClick={() => setSelectedTime(time)}
-                      className={`p-3 text-sm border rounded-lg ${
-                        selectedTime === time
-                          ? 'bg-black text-white'
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                    >
-                      {time}
-                    </button>
-                  ))}
-                </div>
+                  {timeSlots.map((time) => {
+                    const disabled = isToday && isTimeInPast(time);
+
+                    return (
+                      <button
+                        key={time}
+                        onClick={() => !disabled && setSelectedTime(time)}
+                        disabled={disabled}
+                        className={`p-3 text-sm border rounded-lg ${
+                          selectedTime === time
+                            ? 'bg-black text-white'
+                            : disabled
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                      >
+                        {time}
+                      </button>
+                    );
+                  })}
+              </div>
               </div>
 
               <div className="flex justify-between">

@@ -14,6 +14,7 @@ import AdminBookingsPage from './pages/AdminBookingsPage';
 import AdminPriceListPage from './pages/AdminPricelistPage';
 import AdminBarberListPage from './pages/AdminBarberListPage.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Navigate } from 'react-router-dom';
 
 function App() {
   const location = useLocation();
@@ -34,6 +35,7 @@ function App() {
 
           <Route path="/admin" element={<ProtectedRoute />}>
             <Route element={<AdminLayout />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="bookings" element={<AdminBookingsPage />} />
               <Route path="prices" element={<AdminPriceListPage />} />

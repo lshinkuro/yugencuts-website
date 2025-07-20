@@ -37,6 +37,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
   const [customerName, setCustomerName] = useState<string>('');
   const [customerPhone, setCustomerPhone] = useState<string>('');
 
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+
+
   const today = new Date().toISOString().split('T')[0];
   const isToday = selectedDate === today;
 
@@ -139,29 +142,48 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
   
     return true;
   };
-  
+
   const handleBookingComplete = async () => {
-    const success = await handleSubmitToSupabase();
-    if (!success) return;
-  
-    const message = `
-      Halo, saya ingin booking layanan:
-      • Layanan: ${selectedService?.name}
-      • Barber: ${selectedBarber?.name}
-      • Tanggal: ${selectedDate}
-      • Jam: ${selectedTime}
-      • Nama: ${customerName}
-      • No HP: ${customerPhone}
-      
-      Note: Terima kasih atas booking-nya di Yugen Cuts. Untuk kenyamanan bersama, mohon datang tepat waktu ya. Keterlambatan lebih dari 10 menit, booking akan dijadwalkan ulang. See you! 🙏🏻😊
-        `.trim();
-      
-        const phone = '628119462018';
-        const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      
-        window.open(whatsappLink, '_blank');
-        onClose();
+  if (!selectedBarber || !selectedService || !selectedDate || !selectedTime || !customerName || !customerPhone) {
+    alert('Please fill all booking fields.');
+    return;
+  }
+
+  if (await isTimeSlotTaken()) {
+    alert('Waktu ini sudah dibooking untuk barber tersebut.');
+    return;
+  }
+
+    // Tampilkan modal konfirmasi dulu
+    setShowConfirmPopup(true);
+  };
+
+  const confirmBookingAndSendWA = async () => {
+      const success = await handleSubmitToSupabase();
+      if (!success) return;
+
+      const message = `
+    Halo, saya ingin booking layanan:
+    • Layanan: ${selectedService?.name}
+    • Barber: ${selectedBarber?.name}
+    • Tanggal: ${selectedDate}
+    • Jam: ${selectedTime}
+    • Nama: ${customerName}
+    • No HP: ${customerPhone}
+
+    Note: Terima kasih atas booking-nya di Yugen Cuts. Untuk kenyamanan bersama, mohon datang tepat waktu ya. Keterlambatan lebih dari 10 menit, booking akan dijadwalkan ulang. See you! 🙏🏻😊
+      `.trim();
+
+      const phone = '628119462018';
+      const whatsappLink = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+      window.open(whatsappLink, '_blank');
+      setShowConfirmPopup(false);
+      onClose();
     };
+
+  
+ 
   
   const getNextAvailableDate = () => {
     const today = new Date();
@@ -363,6 +385,42 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
             </div>
           )}
         </div>
+        {showConfirmPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-60">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg">
+            <h3 className="text-lg font-bold mb-4">Konfirmasi Booking</h3>
+            <p className="text-sm text-gray-700 mb-4">
+              Apakah kamu yakin ingin melakukan booking dengan detail berikut?
+            </p>
+            <ul className="text-sm text-gray-600 mb-4 space-y-1">
+              <li><strong>Layanan:</strong> {selectedService?.name}</li>
+              <li><strong>Barber:</strong> {selectedBarber?.name}</li>
+              <li><strong>Tanggal:</strong> {selectedDate}</li>
+              <li><strong>Jam:</strong> {selectedTime}</li>
+              <li><strong>Nama:</strong> {customerName}</li>
+              <li><strong>No HP:</strong> {customerPhone}</li>
+            </ul>
+            <p className="text-xs text-gray-500 mb-4">
+              Jika ingin pembatalan, hubungi langsung WA <strong>Yugen Cuts</strong> ya!
+            </p>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowConfirmPopup(false)}
+                className="px-4 py-2 border rounded-lg"
+              >
+                Batal
+              </button>
+              <button
+                onClick={confirmBookingAndSendWA}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg"
+              >
+                Ya, Saya Setuju
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       </div>
     </div>
   );

@@ -101,7 +101,6 @@ const BookingsPage = () => {
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3 text-left">Customer</th>
-                <th className="p-3 text-left">Customer Phone</th>
                 <th className="p-3 text-left">Service</th>
                 <th className="p-3 text-left">Barber</th>
                 <th className="p-3 text-left">Date</th>
@@ -113,7 +112,6 @@ const BookingsPage = () => {
               {bookings.map((booking) => (
                 <tr key={booking.order_id} className="border-t border-gray-200 hover:bg-gray-50">
                   <td className="p-3">{booking.customer_name}</td>
-                  <td className="p-3 text-sm text-gray-600">{booking.notes || '-'}</td>
                   <td className="p-3">{booking.service}</td>
                   <td className="p-3">{booking.barber_name}</td>
                   <td className="p-3">{formatIndoDate(booking.date)}</td>

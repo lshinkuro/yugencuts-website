@@ -187,7 +187,10 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
   
   const getNextAvailableDate = () => {
     const today = new Date();
-    return today.toISOString().split('T')[0];
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`; // format: yyyy-mm-dd
   };
 
   if (!isOpen) return null;

@@ -61,24 +61,31 @@ const AdminLayout = () => {
               icon={BarChart2}
               label="Dashboard"
               active={location.pathname.includes('/dashboard')}
+              sidebarOpen={sidebarOpen}
             />
             <SidebarLink
               to="/admin/bookings"
               icon={CalendarCheck2}
               label="Bookings"
               active={location.pathname.includes('/bookings')}
+              sidebarOpen={sidebarOpen}
+
             />
             <SidebarLink
               to="/admin/prices"
               icon={DollarSign}
               label="Pricelist"
               active={location.pathname.includes('/prices')}
+              sidebarOpen={sidebarOpen}
+
             />
             <SidebarLink
               to="/admin/barbers"
               icon={Scissors}
               label="Barbers"
               active={location.pathname.includes('/barbers')}
+              sidebarOpen={sidebarOpen}
+
             />
           </nav>
         </div>

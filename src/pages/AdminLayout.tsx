@@ -17,8 +17,10 @@ const SidebarLink = ({ to, icon: Icon, label, active, sidebarOpen }: any) => (
     className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors
       ${active ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100'}`}
   >
-    <Icon className="w-5 h-5" />
-    <span className={`${sidebarOpen ? 'ml-3 inline' : 'hidden'}`}>
+    <div className="w-5 h-5 flex items-center justify-center">
+      <Icon className="w-5 h-5" />
+    </div>
+    <span className={`ml-3 ${sidebarOpen ? 'block' : 'hidden'}`}>
       {label}
     </span>
   </Link>

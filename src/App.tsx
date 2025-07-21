@@ -6,7 +6,7 @@ import ListBarbers from './pages/ListBarber';
 import About from './pages/About';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
-import BookingsPage from './pages/BookingsPage';
+// import BookingsPage from './pages/BookingsPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminLayout from './pages/AdminLayout';
 import AdminDashboard from './pages/AdminDashboard';
@@ -30,7 +30,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/bookinglist" element={<BookingsPage />} />
+          {/* <Route path="/bookinglist" element={<BookingsPage />} /> */}
           <Route path="/admin/login" element={<AdminLogin />} />
 
           <Route path="/admin" element={<ProtectedRoute />}>

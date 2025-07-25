@@ -52,7 +52,7 @@ const handleLogout = async () => {
       {/* Sidebar */}
       <aside
         className={`${
-          sidebarOpen ? 'w-64' : 'w-16'
+          sidebarOpen ? 'w-64' : 'w-18'
         } bg-white border-r transition-all duration-300 flex flex-col justify-between`}
       >
         <div>

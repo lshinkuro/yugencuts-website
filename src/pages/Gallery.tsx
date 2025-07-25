@@ -1,48 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
+import { supabase } from '../lib/supabaseClient';
 
-type ImageItem = {
+type PhotoItem = {
   id: number;
-  url: string;
-  category: 'Haircut' | 'Beard' | 'Styling';
+  name: string;
+  image_path: string;
+  category: string;
+  created_at: string;
 };
 
 const categories = ['All', 'Haircut', 'Beard', 'Styling'];
 
-const galleryItems: ImageItem[] = [
-  {
-    id: 1,
-    url: 'https://plus.unsplash.com/premium_photo-1683120994739-2be0d817c0e4?q=80&w=988&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    category: 'Haircut',
-  },
-  {
-    id: 2,
-    url: 'https://plus.unsplash.com/premium_photo-1683120994739-2be0d817c0e4?q=80&w=988&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    category: 'Beard',
-  },
-  {
-    id: 3,
-    url: 'https://plus.unsplash.com/premium_photo-1683120994739-2be0d817c0e4?q=80&w=988&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    category: 'Styling',
-  },
-  {
-    id: 4,
-    url: 'https://plus.unsplash.com/premium_photo-1683120994739-2be0d817c0e4?q=80&w=988&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    category: 'Haircut',
-  },
-  {
-    id: 5,
-    url: 'https://plus.unsplash.com/premium_photo-1683120994739-2be0d817c0e4?q=80&w=988&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    category: 'Haircut',
-  },
-];
-
 const Gallery: React.FC = () => {
+  const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  const filteredImages = selectedCategory === 'All'
-    ? galleryItems
-    : galleryItems.filter((item) => item.category === selectedCategory);
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      const { data, error } = await supabase
+        .from('potolist_table')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching photos:', error);
+      } else {
+        setPhotos(data as PhotoItem[]);
+      }
+    };
+
+    fetchPhotos();
+  }, []);
+
+  const filteredPhotos = selectedCategory === 'All'
+    ? photos
+    : photos.filter((item) => item.category === selectedCategory);
 
   return (
     <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
@@ -67,14 +59,14 @@ const Gallery: React.FC = () => {
         </div>
 
         <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
-          {filteredImages.map((item) => (
+          {filteredPhotos.map((item) => (
             <div
               key={item.id}
               className="break-inside-avoid overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <img
-                src={item.url}
-                alt={`Gallery ${item.id}`}
+                src={item.image_path}
+                alt={item.name || `Gallery ${item.id}`}
                 className="w-full object-cover rounded-xl hover:scale-105 transition-transform duration-300"
               />
             </div>

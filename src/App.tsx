@@ -13,6 +13,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminBookingsPage from './pages/AdminBookingsPage';
 import AdminPriceListPage from './pages/AdminPricelistPage';
 import AdminBarberListPage from './pages/AdminBarberListPage.tsx';
+import AdminGallery from './pages/AdminGallery.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Navigate } from 'react-router-dom';
 
@@ -40,6 +41,7 @@ function App() {
               <Route path="bookings" element={<AdminBookingsPage />} />
               <Route path="prices" element={<AdminPriceListPage />} />
               <Route path="barbers" element={<AdminBarberListPage />} />
+              <Route path="gallery" element={<AdminGallery />} />
             </Route>
           </Route>
         </Routes>

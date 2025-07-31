@@ -7,6 +7,7 @@ import {
   DollarSign,
   Scissors,
   Menu,
+  ImageDownIcon,
   X,
   LogOut,
 } from 'lucide-react';
@@ -99,6 +100,15 @@ const handleLogout = async () => {
               icon={Scissors}
               label="Barbers"
               active={location.pathname.includes('/barbers')}
+              sidebarOpen={sidebarOpen}
+
+            />
+
+               <SidebarLink
+              to="/admin/gallery"
+              icon={ImageDownIcon}
+              label="Gallery"
+              active={location.pathname.includes('/gallery')}
               sidebarOpen={sidebarOpen}
 
             />

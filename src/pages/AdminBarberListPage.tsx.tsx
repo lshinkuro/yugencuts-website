@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { X } from 'lucide-react';
 
+interface Branch {
+  branch_id: string;
+  branch_name: string;
+  branch_address: string;
+}
+
 interface BarberItem {
   barber_id: string;
   name: string;
@@ -11,13 +17,16 @@ interface BarberItem {
   experience: string;
   rating: number;
   status: boolean;
+  branch_id: string;
+  branch_name?: string;
 }
 
 const AdminBarberListPage = () => {
   const [barbers, setBarbers] = useState<BarberItem[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<BarberItem | null>(null);
-  const [form, setForm] = useState<Omit<BarberItem, 'barber_id'>>({
+  const [form, setForm] = useState<Omit<BarberItem, 'barber_id' | 'branch_name'>>({ 
     name: '',
     role: '',
     bio: '',
@@ -25,15 +34,35 @@ const AdminBarberListPage = () => {
     experience: '',
     rating: 4.9,
     status: true,
+    branch_id: '',
   });
   const [showModal, setShowModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<null | string>(null);
 
+  const fetchBranches = async () => {
+    const { data, error } = await supabase.from('branch_table').select('*');
+    if (!error && data) {
+      setBranches(data);
+    } else {
+      console.error('Error fetching branches:', error);
+    }
+  };
+
   const fetchBarbers = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('barberlist_table').select('*').order('name');
+    const { data, error } = await supabase
+      .from('barberlist_table')
+      .select(`
+        *,
+        branch_table(branch_name)
+      `)
+      .order('name');
     if (!error && data) {
-      setBarbers(data);
+      const barbersWithBranchName = data.map(barber => ({
+        ...barber,
+        branch_name: barber.branch_table?.branch_name
+      }));
+      setBarbers(barbersWithBranchName);
     } else {
       console.error('Error fetching barber list:', error);
     }
@@ -41,6 +70,7 @@ const AdminBarberListPage = () => {
   };
 
   useEffect(() => {
+    fetchBranches();
     fetchBarbers();
   }, []);
 
@@ -61,12 +91,15 @@ const AdminBarberListPage = () => {
       experience: item.experience,
       rating: item.rating,
       status: item.status,
+      branch_id: item.branch_id,
     });
     setShowModal(true);
   };
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    
     setForm((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : name === 'rating' ? parseFloat(value) : value,
@@ -81,7 +114,7 @@ const AdminBarberListPage = () => {
     }
     setSelectedItem(null);
     setShowModal(false);
-    setForm({ name: '', role: '', bio: '', image: '', experience: '', rating: 4.9, status: true });
+    setForm({ name: '', role: '', bio: '', image: '', experience: '', rating: 4.9, status: true, branch_id: '' });
     fetchBarbers();
   };
 
@@ -92,7 +125,7 @@ const AdminBarberListPage = () => {
         <button
           onClick={() => {
             setSelectedItem(null);
-            setForm({ name: '', role: '', bio: '', image: '', experience: '', rating: 4.9, status: true });
+            setForm({ name: '', role: '', bio: '', image: '', experience: '', rating: 4.9, status: true, branch_id: '' });
             setShowModal(true);
           }}
           className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
@@ -111,6 +144,7 @@ const AdminBarberListPage = () => {
               <th className="p-2 text-left">Role</th>
               <th className="p-2 text-left">Experience</th>
               <th className="p-2 text-left">Rating</th>
+              <th className="p-2 text-left">Branch</th>
               <th className="p-2 text-left">Status</th>
               <th className="p-2 text-left">Actions</th>
             </tr>
@@ -122,6 +156,7 @@ const AdminBarberListPage = () => {
                 <td className="p-2">{item.role}</td>
                 <td className="p-2">{item.experience}</td>
                 <td className="p-2">{item.rating.toFixed(1)}</td>
+                <td className="p-2">{item.branch_name}</td>
                 <td className="p-2">{item.status ? 'Active' : 'Inactive'}</td>
                 <td className="p-2 space-x-2">
                   <button onClick={() => handleEdit(item)} className="text-blue-600 hover:underline">Edit</button>
@@ -146,6 +181,19 @@ const AdminBarberListPage = () => {
               <input name="role" placeholder="Role" value={form.role} onChange={handleFormChange} className="border p-2 rounded" />
               <input name="experience" placeholder="Experience" value={form.experience} onChange={handleFormChange} className="border p-2 rounded" />
               <input name="rating" placeholder="Rating" type="number" step="0.1" value={form.rating} onChange={handleFormChange} className="border p-2 rounded" />
+              <select 
+                name="branch_id" 
+                value={form.branch_id} 
+                onChange={handleFormChange} 
+                className="border p-2 rounded"
+              >
+                <option value="">Select Branch</option>
+                {branches.map((branch) => (
+                  <option key={branch.branch_id} value={branch.branch_id}>
+                    {branch.branch_name}
+                  </option>
+                ))}
+              </select>
               <input name="image" placeholder="Image URL" value={form.image} onChange={handleFormChange} className="border p-2 rounded col-span-2" />
               <textarea name="bio" placeholder="Bio" value={form.bio} onChange={handleFormChange} className="border p-2 rounded col-span-2" />
               <label className="col-span-2 flex items-center space-x-2">

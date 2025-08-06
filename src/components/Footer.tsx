@@ -9,20 +9,35 @@ import {
 } from 'lucide-react';
 import logo from '../assets/logo.jpeg';
 
-
 const Footer = () => {
   const contactInfo = [
     {
       icon: MapPin,
       label: (
-        <a
-          href="https://maps.app.goo.gl/fZjFjsBAE6YPHn728"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:underline"
-        >
-          📍Jl. Margonda No.518a, Pondok Cina, Kecamatan Beji, Kota Depok, Jawa Barat 16424
-        </a>
+        <div className="flex flex-col space-y-2">
+          <div>
+            <span className="font-semibold block mb-1">Cabang 1 (Margonda):</span>
+            <a
+              href="https://maps.app.goo.gl/fZjFjsBAE6YPHn728"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              📍Jl. Margonda No.518a, Pondok Cina, Kecamatan Beji, Kota Depok, Jawa Barat 16424
+            </a>
+          </div>
+          <div>
+            <span className="font-semibold block mb-1">Cabang 2 (Sukmajaya):</span>
+            <a
+              href="https://maps.app.goo.gl/YZGvZKDvhHBGPUYt9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              📍Jl. Tole Iskandar Graha DL No.8B, Sukmajaya, Kec. Sukmajaya, Kota Depok, Jawa Barat 16412
+            </a>
+          </div>
+        </div>
       ),
     },
     { icon: Phone, label: '+62 811-9462-018' },

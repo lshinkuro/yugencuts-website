@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import clsx from 'clsx';
 
 type PhotoItem = {
   id: number;
@@ -12,7 +12,7 @@ type PhotoItem = {
 
 const categories = ['All', 'Haircut', 'Beard', 'Styling'];
 
-const Gallery: React.FC = () => {
+const HomeGallery = () => {
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
@@ -20,7 +20,8 @@ const Gallery: React.FC = () => {
     const fetchPhotos = async () => {
       const { data, error } = await supabase
         .from('potolist_table')
-        .select('*');
+        .select('*')
+        .limit(8); // Mengambil 8 foto untuk grid 2x4
 
       if (error) {
         console.error('Error fetching photos:', error);
@@ -37,9 +38,9 @@ const Gallery: React.FC = () => {
     : photos.filter((item) => item.category === selectedCategory);
 
   return (
-    <section className="bg-white py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-[#1F2A44] mb-10 text-left">Gallery</h2>
+    <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-4xl font-bold text-[#1F2A44] mb-10 text-left">Our Gallery</h2>
 
         <div className="flex gap-3 mb-12 flex-wrap">
           {categories.map((cat) => (
@@ -58,16 +59,16 @@ const Gallery: React.FC = () => {
           ))}
         </div>
 
-        <div className="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredPhotos.map((item) => (
             <div
               key={item.id}
-              className="break-inside-avoid overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="aspect-square overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <img
                 src={item.image_path}
                 alt={item.name || `Gallery ${item.id}`}
-                className="w-full object-cover rounded-xl hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover rounded-xl hover:scale-105 transition-transform duration-300"
               />
             </div>
           ))}
@@ -77,4 +78,4 @@ const Gallery: React.FC = () => {
   );
 };
 
-export default Gallery;
+export default HomeGallery;

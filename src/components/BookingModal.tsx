@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 
+type Branch = {
+  branch_id: string;
+  branch_name: string;
+  branch_address: string;
+};
+
 type Barber = {
   barber_id: string;
   id: number;
@@ -13,6 +19,7 @@ type Barber = {
   specialty?: string;
   rating?: number;
   status?: boolean;
+  branch_id: string;
 };
 
 type Service = {
@@ -31,12 +38,13 @@ type BookingModalProps = {
 const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedService }) => {
   const [step, setStep] = useState<number>(1);
   const [barbers, setBarbers] = useState<Barber[]>([]);
+  const [branches, setBranch] = useState<Branch[]>([]);
+  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
   const [selectedBarber, setSelectedBarber] = useState<Barber | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [customerName, setCustomerName] = useState<string>('');
   const [customerPhone, setCustomerPhone] = useState<string>('');
-
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
 
 
@@ -50,11 +58,23 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
   ];
 
   useEffect(() => {
+    const fetchBranch = async () => {
+      const { data, error } = await supabase
+        .from('branch_table')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching branch:', error);
+      } else {
+        setBranch(data as Branch[]);
+      }
+    };
+
     const fetchBarbers = async () => {
       const { data, error } = await supabase
         .from('barberlist_table')
         .select('*')
-        .eq('status', true); // hanya ambil barber dengan status true;
+        .eq('status', true);
 
       if (error) {
         console.error('Error fetching barbers:', error);
@@ -63,11 +83,15 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
       }
     };
 
-    if (isOpen) fetchBarbers();
+    if (isOpen)  { 
+      fetchBranch();
+      fetchBarbers();
+    };
   }, [isOpen]);
 
   const resetModal = () => {
     setStep(1);
+    setSelectedBranch(null);
     setSelectedBarber(null);
     setSelectedDate('');
     setSelectedTime('');
@@ -131,6 +155,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
           time: selectedTime,
           notes: customerPhone,
           status: 'Booked',
+          branch_id: selectedBranch?.branch_id,
         }
       ]);
   
@@ -162,8 +187,10 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
       const success = await handleSubmitToSupabase();
       if (!success) return;
 
+
       const message = `
     Halo, saya ingin booking layanan:
+    • Cabang: ${selectedBranch?.branch_name}
     • Layanan: ${selectedService?.name}
     • Barber: ${selectedBarber?.name}
     • Tanggal: ${selectedDate}
@@ -207,30 +234,25 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
         </div>
 
         {/* Progress Steps */}
-        {step < 4 && (
+        {step < 5 && (
           <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex items-center space-x-4">
-              {[1, 2, 3].map((stepNumber) => (
+              {[1, 2, 3, 4].map((stepNumber) => (
                 <div key={stepNumber} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                      step >= stepNumber ? 'text-white' : 'bg-gray-200 text-gray-600'
-                    }`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step >= stepNumber ? 'text-white' : 'bg-gray-200 text-gray-600'}`}
                     style={step >= stepNumber ? { backgroundColor: '#1F2A44' } : {}}
                   >
                     {stepNumber}
                   </div>
-                  {stepNumber < 3 && (
-                    <div
-                      className={`w-12 h-0.5 mx-2 ${
-                        step > stepNumber ? 'bg-black' : 'bg-gray-200'
-                      }`}
-                    />
+                  {stepNumber < 4 && (
+                    <div className={`w-12 h-0.5 mx-2 ${step > stepNumber ? 'bg-black' : 'bg-gray-200'}`} />
                   )}
                 </div>
               ))}
             </div>
             <div className="flex justify-between mt-2 text-sm text-gray-600">
+              <span>Choose Branch</span>
               <span>Choose Barber</span>
               <span>Select Date & Time</span>
               <span>Confirm Details</span>
@@ -241,7 +263,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
         {/* Content */}
         <div className="p-6">
           {/* Selected Service */}
-          {selectedService && step < 4 && (
+          {selectedService && step < 5 && (
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <h3 className="font-semibold text-gray-900 mb-1">Selected Service</h3>
               <p className="text-gray-600">{selectedService.name} - {selectedService.price}</p>
@@ -249,18 +271,46 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
             </div>
           )}
 
-          {/* Step 1: Choose Barber */}
+          {/* Step 1: Choose Branch */}
           {step === 1 && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Choose Branch</h3>
+              <div className="space-y-4">
+                {branches.map((branch) => (
+                  <div
+                    key={branch.branch_id}
+                    onClick={() => setSelectedBranch(branch)}
+                    className={`p-4 border rounded-lg cursor-pointer ${selectedBranch?.branch_id === branch.branch_id ? 'border-black bg-gray-50' : 'border-gray-200'}`}
+                  >
+                    <h4 className="font-semibold">{branch.branch_name}</h4>
+                    <p className="text-sm text-gray-600">{branch.branch_address}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setStep(2)}
+                  disabled={!selectedBranch}
+                  className="px-6 py-2 bg-black text-white disabled:bg-gray-300"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Choose Barber (sebelumnya Step 1) */}
+          {step === 2 && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Choose Your Barber</h3>
               <div className="space-y-4">
-                {barbers.map((barber) => (
+                {barbers
+                .filter(barber => barber.branch_id === selectedBranch?.branch_id) // ⬅️ tambahkan ini
+                .map((barber) => (
                   <div
                     key={barber.barber_id}
                     onClick={() => setSelectedBarber(barber)}
-                    className={`p-4 border rounded-lg cursor-pointer ${
-                      selectedBarber?.barber_id === barber.barber_id ? 'border-black bg-gray-50' : 'border-gray-200'
-                    }`}
+                    className={`p-4 border rounded-lg cursor-pointer ${selectedBarber?.barber_id === barber.barber_id ? 'border-black bg-gray-50' : 'border-gray-200'}`}
                   >
                     <div className="flex items-center space-x-4">
                       <img
@@ -280,9 +330,10 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
                   </div>
                 ))}
               </div>
-              <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex justify-between">
+                <button onClick={() => setStep(1)} className="px-6 py-2 border">Back</button>
                 <button
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(3)}
                   disabled={!selectedBarber}
                   className="px-6 py-2 bg-black text-white disabled:bg-gray-300"
                 >
@@ -292,8 +343,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
             </div>
           )}
 
-          {/* Step 2: Date & Time */}
-          {step === 2 && (
+          {/* Step 3: Date & Time (sebelumnya Step 2) */}
+          {step === 3 && (
             <div>
               <h3 className="text-lg font-semibold mb-4">Select Date & Time</h3>
 
@@ -335,9 +386,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
               </div>
 
               <div className="flex justify-between">
-                <button onClick={() => setStep(1)} className="px-6 py-2 border">Back</button>
+                <button onClick={() => setStep(2)} className="px-6 py-2 border">Back</button>
                 <button
-                  onClick={() => setStep(3)}
+                  onClick={() => setStep(4)}
                   disabled={!selectedDate || !selectedTime}
                   className="px-6 py-2 bg-black text-white disabled:bg-gray-300"
                 >
@@ -347,8 +398,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
             </div>
           )}
 
-          {/* Step 3: Confirm */}
-          {step === 3 && (
+          {/* Step 4: Confirm (sebelumnya Step 3) */}
+          {step === 4 && (
             <div>
               <h3 className="text-lg font-semibold mb-4">Confirm Your Details</h3>
 
@@ -376,7 +427,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
               </div>
 
               <div className="flex justify-between">
-                <button onClick={() => setStep(2)} className="px-6 py-2 border">Back</button>
+                <button onClick={() => setStep(3)} className="px-6 py-2 border">Back</button>
                 <button
                   onClick={handleBookingComplete}
                   disabled={!customerName || !customerPhone}
@@ -388,42 +439,44 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, selectedSe
             </div>
           )}
         </div>
+
+        {/* Confirmation Popup */}
         {showConfirmPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-60">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg">
-            <h3 className="text-lg font-bold mb-4">Konfirmasi Booking</h3>
-            <p className="text-sm text-gray-700 mb-4">
-              Apakah kamu yakin ingin melakukan booking dengan detail berikut?
-            </p>
-            <ul className="text-sm text-gray-600 mb-4 space-y-1">
-              <li><strong>Layanan:</strong> {selectedService?.name}</li>
-              <li><strong>Barber:</strong> {selectedBarber?.name}</li>
-              <li><strong>Tanggal:</strong> {selectedDate}</li>
-              <li><strong>Jam:</strong> {selectedTime}</li>
-              <li><strong>Nama:</strong> {customerName}</li>
-              <li><strong>No HP:</strong> {customerPhone}</li>
-            </ul>
-            <p className="text-xs text-gray-500 mb-4">
-              Jika ingin pembatalan, hubungi langsung WA <strong>Yugen Cuts</strong> ya!
-            </p>
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setShowConfirmPopup(false)}
-                className="px-4 py-2 border rounded-lg"
-              >
-                Batal
-              </button>
-              <button
-                onClick={confirmBookingAndSendWA}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg"
-              >
-                Ya, Saya Setuju
-              </button>
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-60">
+            <div className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg">
+              <h3 className="text-lg font-bold mb-4">Konfirmasi Booking</h3>
+              <p className="text-sm text-gray-700 mb-4">
+                Apakah kamu yakin ingin melakukan booking dengan detail berikut?
+              </p>
+              <ul className="text-sm text-gray-600 mb-4 space-y-1">
+                <li><strong>Cabang:</strong> {selectedBranch?.branch_name}</li>
+                <li><strong>Layanan:</strong> {selectedService?.name}</li>
+                <li><strong>Barber:</strong> {selectedBarber?.name}</li>
+                <li><strong>Tanggal:</strong> {selectedDate}</li>
+                <li><strong>Jam:</strong> {selectedTime}</li>
+                <li><strong>Nama:</strong> {customerName}</li>
+                <li><strong>No HP:</strong> {customerPhone}</li>
+              </ul>
+              <p className="text-xs text-gray-500 mb-4">
+                Jika ingin pembatalan, hubungi langsung WA <strong>Yugen Cuts</strong> ya!
+              </p>
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowConfirmPopup(false)}
+                  className="px-4 py-2 border rounded-lg"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={confirmBookingAndSendWA}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg"
+                >
+                  Ya, Saya Setuju
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
+        )}
       </div>
     </div>
   );

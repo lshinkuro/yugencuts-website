@@ -11,7 +11,7 @@ const PromoSection = () => {
             alt="Yugen Cuts Promo"
             className="w-full h-[400px] object-cover object-center"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end justify-center pb-8">
+          <div className="absolute inset-0 bg-black bg-opacity-20 flex items-end justify-center pb-8">
             <div className="text-center">
               <h2 className="text-4xl font-bold text-white mb-4">Special Promo</h2>
               <p className="text-xl text-yellow-400 font-semibold">
